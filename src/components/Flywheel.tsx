@@ -86,15 +86,15 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
       {/* Stage boxes */}
       {stages.map((s, i) => {
         const { cx, cy } = positions[i];
-        const w = size * 0.22;
-        const h = size * 0.13;
+        const w = Math.max(size * 0.28, 130);
+        const h = Math.max(size * 0.16, 76);
         return (
           <motion.button
             key={s.id}
             whileHover={{ scale: 1.06, y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onSelectStage(wheel, s.id)}
-            className="absolute rounded-xl text-left px-3 py-2 bg-card border-2 shadow-md hover:shadow-xl transition-shadow cursor-pointer"
+            className="absolute rounded-xl text-left px-2.5 py-2 bg-card border-2 shadow-md hover:shadow-xl transition-shadow cursor-pointer flex flex-col"
             style={{
               left: cx - w / 2,
               top: cy - h / 2,
@@ -105,16 +105,16 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
           >
             <div className="flex items-center gap-1.5">
               <span
-                className="inline-flex items-center justify-center rounded-full text-[10px] font-bold text-white"
+                className="inline-flex items-center justify-center rounded-full text-[10px] font-bold text-white shrink-0"
                 style={{ background: wheel.color, width: 18, height: 18 }}
               >
                 {s.num}
               </span>
-              <div className="text-[11px] font-bold leading-tight text-foreground line-clamp-2">
+              <div className="text-[11px] font-bold leading-tight text-foreground">
                 {s.title}
               </div>
             </div>
-            <div className="text-[9px] text-muted-foreground mt-1 line-clamp-2">{s.subtitle}</div>
+            <div className="text-[9px] text-muted-foreground mt-1 leading-snug">{s.subtitle}</div>
           </motion.button>
         );
       })}
