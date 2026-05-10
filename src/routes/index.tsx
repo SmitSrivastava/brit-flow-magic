@@ -38,7 +38,7 @@ function Index() {
 
       {/* Galaxy */}
       <section className="max-w-7xl mx-auto px-4 py-10 overflow-x-auto">
-        <div className="min-w-[1200px]">
+        <div className="min-w-[1200px] relative" style={{ height: 1300 }}>
           <FlywheelGalaxy onSelectStage={open} />
         </div>
       </section>
