@@ -63,8 +63,16 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --background: oklch(0.99 0.005 80);
+  --foreground: oklch(0.18 0.04 25);
+  --britannia-red: oklch(0.55 0.22 27);
+  --britannia-red-deep: oklch(0.42 0.21 27);
+  --britannia-cream: oklch(0.97 0.03 80);
+  --britannia-gold: oklch(0.78 0.14 75);
+  --britgpt: oklch(0.55 0.22 27);
+  --creative: oklch(0.68 0.18 50);
+  --aeo: oklch(0.55 0.15 230);
+  --shadow-britannia: 0 10px 40px -10px oklch(0.55 0.22 27 / 0.35);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.129 0.042 264.695);
   --popover: oklch(1 0 0);
