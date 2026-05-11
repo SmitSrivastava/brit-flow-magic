@@ -92,7 +92,7 @@ export function FlywheelGalaxy({ onSelectStage }: Props) {
           animate={{ strokeDashoffset: [0, -28] }}
           transition={{ duration: 2, ease: "linear", repeat: Infinity, delay: 0.3 }}
         />
-        <text x={crTop.x - 220} y={crTop.y - 110} fill="var(--britannia-red)" fontSize="12" fontWeight="700">
+        <text x={crTop.x + 40} y={crTop.y - 110} fill="var(--britannia-red)" fontSize="12" fontWeight="700">
           Audience + Commerce context
         </text>
 
