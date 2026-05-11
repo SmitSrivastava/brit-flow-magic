@@ -6,26 +6,26 @@ type Props = { onSelectStage: (wheel: Wheel, stageId: string) => void };
 
 // Layout coordinates (must match the absolute-positioned wheels below)
 const VW = 1200;
-const VH = 1280;
+const VH = 1700;
 
 // AEO top-center
-const AEO_SIZE = 320;
+const AEO_SIZE = 440;
 const AEO_CX = 600;
-const AEO_TOP = 40;
-const AEO_CY = AEO_TOP + AEO_SIZE / 2; // 200
+const AEO_TOP = 60;
+const AEO_CY = AEO_TOP + AEO_SIZE / 2;
 
-// BritGPT middle
-const BG_SIZE = 580;
+// BritGPT middle (kept apart from AEO)
+const BG_SIZE = 620;
 const BG_CX = 600;
-const BG_TOP = 380;
-const BG_CY = BG_TOP + BG_SIZE / 2; // 670
+const BG_TOP = 620;
+const BG_CY = BG_TOP + BG_SIZE / 2;
 const BG_R = BG_SIZE / 2;
 
 // Creative bottom
-const CR_SIZE = 320;
+const CR_SIZE = 440;
 const CR_CX = 600;
-const CR_TOP = 940;
-const CR_CY = CR_TOP + CR_SIZE / 2; // 1100
+const CR_TOP = 1320;
+const CR_CY = CR_TOP + CR_SIZE / 2;
 const CR_R = CR_SIZE / 2;
 
 // Helper: stage-box centers on a wheel (i = stage index, 0..5)
