@@ -77,11 +77,9 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
           boxShadow: highlight ? "var(--shadow-britannia)" : "0 8px 30px -10px rgba(0,0,0,0.3)",
         }}
       >
-        <div className="text-xs uppercase tracking-[0.2em] opacity-80">Flywheel</div>
-        <div className="font-bold leading-tight mt-1" style={{ fontSize: size * 0.042 }}>
+        <div className="font-bold leading-tight" style={{ fontSize: size * 0.05 }}>
           {wheel.name.replace(" Flywheel", "")}
         </div>
-        <div className="text-[10px] mt-1 opacity-80 max-w-[80%]">{wheel.tagline}</div>
       </div>
 
       {/* Stage boxes */}

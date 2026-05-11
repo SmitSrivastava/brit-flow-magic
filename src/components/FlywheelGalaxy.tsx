@@ -21,9 +21,9 @@ const BG_TOP = 620;
 const BG_CY = BG_TOP + BG_SIZE / 2;
 const BG_R = BG_SIZE / 2;
 
-// Creative bottom
+// Creative bottom (shifted right so BritGPT→Creative arrows are clearly visible)
 const CR_SIZE = 440;
-const CR_CX = 600;
+const CR_CX = 820;
 const CR_TOP = 1320;
 const CR_CY = CR_TOP + CR_SIZE / 2;
 const CR_R = CR_SIZE / 2;
@@ -76,35 +76,35 @@ export function FlywheelGalaxy({ onSelectStage }: Props) {
           Discovery & narrative signals
         </text>
 
-        {/* BritGPT box 2 -> Creative box 1 */}
+        {/* BritGPT box 2 (right-upper) -> Creative top — smooth S-curve */}
         <motion.path
-          d={`M ${bg2.x + 40} ${bg2.y + 20} C ${bg2.x + 120} ${(bg2.y + crTop.y) / 2}, ${crTop.x + 80} ${(bg2.y + crTop.y) / 2}, ${crTop.x + 10} ${crTop.y - 40}`}
+          d={`M ${bg2.x + 30} ${bg2.y + 10} C ${bg2.x + 30} ${bg2.y + 180}, ${crTop.x} ${crTop.y - 200}, ${crTop.x - 20} ${crTop.y - 40}`}
           stroke="var(--britannia-red)" strokeWidth="2.5" fill="none"
           strokeDasharray="8 6" markerEnd="url(#arr-red)"
           animate={{ strokeDashoffset: [0, -28] }}
           transition={{ duration: 2, ease: "linear", repeat: Infinity, delay: 0.15 }}
         />
-        {/* BritGPT box 3 -> Creative box 1 */}
+        {/* BritGPT box 3 (right-lower) -> Creative top — gentle curve */}
         <motion.path
-          d={`M ${bg3.x + 40} ${bg3.y + 20} C ${bg3.x + 100} ${(bg3.y + crTop.y) / 2}, ${crTop.x + 60} ${(bg3.y + crTop.y) / 2}, ${crTop.x + 30} ${crTop.y - 30}`}
+          d={`M ${bg3.x + 30} ${bg3.y + 10} C ${bg3.x + 60} ${bg3.y + 120}, ${crTop.x + 20} ${crTop.y - 160}, ${crTop.x + 20} ${crTop.y - 40}`}
           stroke="var(--britannia-red)" strokeWidth="2.5" fill="none"
           strokeDasharray="8 6" markerEnd="url(#arr-red)"
           animate={{ strokeDashoffset: [0, -28] }}
           transition={{ duration: 2, ease: "linear", repeat: Infinity, delay: 0.3 }}
         />
-        <text x={bg3.x + 90} y={(bg3.y + crTop.y) / 2 - 10} fill="var(--britannia-red)" fontSize="12" fontWeight="700">
+        <text x={crTop.x - 220} y={crTop.y - 110} fill="var(--britannia-red)" fontSize="12" fontWeight="700">
           Audience + Commerce context
         </text>
 
-        {/* Creative Activate (box 3) -> BritGPT box 4 (Activate) */}
+        {/* Creative Activate (right side) -> BritGPT box 4 (bottom) — wide arc going left then up */}
         <motion.path
-          d={`M ${crActivate.x - 40} ${crActivate.y - 10} C ${crActivate.x - 140} ${(crActivate.y + bg4.y) / 2}, ${bg4.x - 100} ${(crActivate.y + bg4.y) / 2}, ${bg4.x - 10} ${bg4.y + 40}`}
+          d={`M ${crActivate.x + 20} ${crActivate.y + 30} C ${crActivate.x + 60} ${crActivate.y + 220}, ${bg4.x} ${bg4.y + 240}, ${bg4.x} ${bg4.y + 40}`}
           stroke="var(--creative)" strokeWidth="2.5" fill="none"
           strokeDasharray="8 6" markerEnd="url(#arr-orange)"
           animate={{ strokeDashoffset: [0, -28] }}
           transition={{ duration: 2, ease: "linear", repeat: Infinity, delay: 0.45 }}
         />
-        <text x={bg4.x - 280} y={(crActivate.y + bg4.y) / 2 + 6} fill="var(--creative)" fontSize="12" fontWeight="700">
+        <text x={(crActivate.x + bg4.x) / 2 - 80} y={Math.max(crActivate.y, bg4.y) + 235} fill="var(--creative)" fontSize="12" fontWeight="700">
           Creative variants → Activate
         </text>
       </svg>
