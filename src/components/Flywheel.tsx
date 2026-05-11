@@ -15,12 +15,13 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
   const inner = r * 0.42;
   const stages = wheel.stages;
 
+  const radiusFactor = 0.78;
   const positions = useMemo(
     () =>
       stages.map((_, i) => {
         const angle = (i / stages.length) * Math.PI * 2 - Math.PI / 2;
-        const cx = r + Math.cos(angle) * (r * 0.72);
-        const cy = r + Math.sin(angle) * (r * 0.72);
+        const cx = r + Math.cos(angle) * (r * radiusFactor);
+        const cy = r + Math.sin(angle) * (r * radiusFactor);
         return { cx, cy, angle };
       }),
     [stages.length, r],
