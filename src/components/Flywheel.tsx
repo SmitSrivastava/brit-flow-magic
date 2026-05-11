@@ -87,8 +87,8 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
       {/* Stage boxes */}
       {stages.map((s, i) => {
         const { cx, cy } = positions[i];
-        const w = Math.max(size * 0.28, 130);
-        const h = Math.max(size * 0.16, 76);
+        const w = Math.max(size * 0.3, 140);
+        const h = Math.max(size * 0.18, 84);
         return (
           <motion.button
             key={s.id}
