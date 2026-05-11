@@ -15,12 +15,13 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
   const inner = r * 0.42;
   const stages = wheel.stages;
 
+  const radiusFactor = 0.78;
   const positions = useMemo(
     () =>
       stages.map((_, i) => {
         const angle = (i / stages.length) * Math.PI * 2 - Math.PI / 2;
-        const cx = r + Math.cos(angle) * (r * 0.72);
-        const cy = r + Math.sin(angle) * (r * 0.72);
+        const cx = r + Math.cos(angle) * (r * radiusFactor);
+        const cy = r + Math.sin(angle) * (r * radiusFactor);
         return { cx, cy, angle };
       }),
     [stages.length, r],
@@ -44,7 +45,7 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
         {stages.map((_, i) => {
           const a1 = (i / stages.length) * Math.PI * 2 - Math.PI / 2 + 0.08;
           const a2 = ((i + 1) / stages.length) * Math.PI * 2 - Math.PI / 2 - 0.08;
-          const ringR = r * 0.92;
+          const ringR = r * 0.96;
           const x1 = r + Math.cos(a1) * ringR;
           const y1 = r + Math.sin(a1) * ringR;
           const x2 = r + Math.cos(a2) * ringR;
@@ -86,8 +87,8 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
       {/* Stage boxes */}
       {stages.map((s, i) => {
         const { cx, cy } = positions[i];
-        const w = Math.max(size * 0.28, 130);
-        const h = Math.max(size * 0.16, 76);
+        const w = Math.max(size * 0.3, 140);
+        const h = Math.max(size * 0.18, 84);
         return (
           <motion.button
             key={s.id}
