@@ -31,7 +31,7 @@ const CR_R = CR_SIZE / 2;
 // Helper: stage-box centers on a wheel (i = stage index, 0..5)
 function stagePos(cx: number, cy: number, r: number, i: number, n = 6) {
   const angle = (i / n) * Math.PI * 2 - Math.PI / 2;
-  return { x: cx + Math.cos(angle) * (r * 0.72), y: cy + Math.sin(angle) * (r * 0.72) };
+  return { x: cx + Math.cos(angle) * (r * 0.78), y: cy + Math.sin(angle) * (r * 0.78) };
 }
 
 export function FlywheelGalaxy({ onSelectStage }: Props) {
