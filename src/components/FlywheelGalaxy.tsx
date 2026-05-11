@@ -21,9 +21,9 @@ const BG_TOP = 620;
 const BG_CY = BG_TOP + BG_SIZE / 2;
 const BG_R = BG_SIZE / 2;
 
-// Creative bottom
+// Creative bottom (shifted right so BritGPT→Creative arrows are clearly visible)
 const CR_SIZE = 440;
-const CR_CX = 600;
+const CR_CX = 820;
 const CR_TOP = 1320;
 const CR_CY = CR_TOP + CR_SIZE / 2;
 const CR_R = CR_SIZE / 2;
