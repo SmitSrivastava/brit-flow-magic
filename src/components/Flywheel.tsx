@@ -78,7 +78,7 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
         }}
       >
         <div className="text-xs uppercase tracking-[0.2em] opacity-80">Flywheel</div>
-        <div className="font-bold leading-tight" style={{ fontSize: size * 0.05 }}>
+        <div className="font-bold leading-tight mt-1" style={{ fontSize: size * 0.042 }}>
           {wheel.name.replace(" Flywheel", "")}
         </div>
         <div className="text-[10px] mt-1 opacity-80 max-w-[80%]">{wheel.tagline}</div>
