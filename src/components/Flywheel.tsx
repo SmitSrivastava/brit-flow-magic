@@ -85,15 +85,15 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
       {/* Stage boxes */}
       {stages.map((s, i) => {
         const { cx, cy } = positions[i];
-        const w = Math.max(size * 0.3, 140);
-        const h = Math.max(size * 0.18, 84);
+        const w = Math.max(size * 0.32, 150);
+        const h = Math.max(size * 0.2, 96);
         return (
           <motion.button
             key={s.id}
             whileHover={{ scale: 1.06, y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onSelectStage(wheel, s.id)}
-            className="absolute rounded-xl text-left px-2.5 py-2 bg-card border-2 shadow-md hover:shadow-xl transition-shadow cursor-pointer flex flex-col"
+            className="absolute rounded-xl text-left px-3 py-2.5 bg-card border-2 shadow-md hover:shadow-xl transition-shadow cursor-pointer flex flex-col overflow-hidden"
             style={{
               left: cx - w / 2,
               top: cy - h / 2,
@@ -102,18 +102,18 @@ export function Flywheel({ wheel, size, onSelectStage, highlight, spinDuration =
               borderColor: wheel.color,
             }}
           >
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <span
-                className="inline-flex items-center justify-center rounded-full text-[10px] font-bold text-white shrink-0"
-                style={{ background: wheel.color, width: 18, height: 18 }}
+                className="inline-flex items-center justify-center rounded-full text-[11px] font-bold text-white shrink-0"
+                style={{ background: wheel.color, width: 22, height: 22 }}
               >
                 {s.num}
               </span>
-              <div className="text-[11px] font-bold leading-tight text-foreground">
+              <div className="font-bold leading-tight text-foreground line-clamp-2" style={{ fontSize: Math.max(size * 0.028, 13) }}>
                 {s.title}
               </div>
             </div>
-            <div className="text-[9px] text-muted-foreground mt-1 leading-snug">{s.subtitle}</div>
+            <div className="text-muted-foreground mt-1 leading-snug line-clamp-2" style={{ fontSize: Math.max(size * 0.022, 11) }}>{s.subtitle}</div>
           </motion.button>
         );
       })}
