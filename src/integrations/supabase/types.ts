@@ -14,7 +14,126 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      britannia_portfolio: {
+        Row: {
+          brand: string
+          category: string
+          created_at: string
+          flavours: string | null
+          id: number
+        }
+        Insert: {
+          brand: string
+          category: string
+          created_at?: string
+          flavours?: string | null
+          id?: number
+        }
+        Update: {
+          brand?: string
+          category?: string
+          created_at?: string
+          flavours?: string | null
+          id?: number
+        }
+        Relationships: []
+      }
+      flavours_global: {
+        Row: {
+          advocacy: number | null
+          consumption_intent: number | null
+          conv_growth: number | null
+          conv_volume: string | null
+          created_at: string
+          diy: number | null
+          eng_growth: number | null
+          eng_volume: string | null
+          flavor: string
+          id: number
+          social_shareability: number | null
+          trend: string | null
+        }
+        Insert: {
+          advocacy?: number | null
+          consumption_intent?: number | null
+          conv_growth?: number | null
+          conv_volume?: string | null
+          created_at?: string
+          diy?: number | null
+          eng_growth?: number | null
+          eng_volume?: string | null
+          flavor: string
+          id?: number
+          social_shareability?: number | null
+          trend?: string | null
+        }
+        Update: {
+          advocacy?: number | null
+          consumption_intent?: number | null
+          conv_growth?: number | null
+          conv_volume?: string | null
+          created_at?: string
+          diy?: number | null
+          eng_growth?: number | null
+          eng_volume?: string | null
+          flavor?: string
+          id?: number
+          social_shareability?: number | null
+          trend?: string | null
+        }
+        Relationships: []
+      }
+      flavours_india: {
+        Row: {
+          advocacy: number | null
+          consumption_intent: number | null
+          conv_growth: number | null
+          conv_volume: string | null
+          created_at: string
+          diy: number | null
+          eng_growth: number | null
+          eng_volume: string | null
+          flavor: string
+          gifting: number | null
+          health_indulgence: number | null
+          id: number
+          shareability: number | null
+          trend: string | null
+        }
+        Insert: {
+          advocacy?: number | null
+          consumption_intent?: number | null
+          conv_growth?: number | null
+          conv_volume?: string | null
+          created_at?: string
+          diy?: number | null
+          eng_growth?: number | null
+          eng_volume?: string | null
+          flavor: string
+          gifting?: number | null
+          health_indulgence?: number | null
+          id?: number
+          shareability?: number | null
+          trend?: string | null
+        }
+        Update: {
+          advocacy?: number | null
+          consumption_intent?: number | null
+          conv_growth?: number | null
+          conv_volume?: string | null
+          created_at?: string
+          diy?: number | null
+          eng_growth?: number | null
+          eng_volume?: string | null
+          flavor?: string
+          gifting?: number | null
+          health_indulgence?: number | null
+          id?: number
+          shareability?: number | null
+          trend?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
