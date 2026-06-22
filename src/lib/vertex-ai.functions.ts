@@ -183,7 +183,7 @@ function parseTaggedJson<T>(raw: string, tag: string): { value?: T; nextText: st
     if (!match) continue;
     try {
       const parsed = JSON.parse(match[1].trim());
-      const value = Array.isArray(parsed) || tag === "concept" ? parsed : parsed?.[tag];
+      const value = Array.isArray(parsed) ? parsed : parsed?.[tag] ?? parsed;
       return { value, nextText: raw.replace(match[0], "").trim() };
     } catch {
       return { nextText: raw.replace(match[0], "").trim() };
@@ -385,16 +385,15 @@ export const askBritGPT = createServerFn({ method: "POST" })
       if (Array.isArray(parsedPlays.value)) plays = parsedPlays.value;
       text = parsedPlays.nextText;
 
-      if (followups.length === 0) {
-        followups = await generateFollowupsFromAnswer({
-          token,
-          projectId,
-          location,
-          model,
-          question: data.question,
-          answer: text,
-        });
-      }
+      const responseSpecificFollowups = await generateFollowupsFromAnswer({
+        token,
+        projectId,
+        location,
+        model,
+        question: data.question,
+        answer: text,
+      });
+      if (responseSpecificFollowups.length > 0) followups = responseSpecificFollowups;
       if (followups.length === 0) followups = fallbackFollowups(data.question, text);
 
       return { ok: true as const, text, followups, concept, plays };
