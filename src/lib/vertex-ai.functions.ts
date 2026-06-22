@@ -160,8 +160,8 @@ type FollowupChip = { label: string; icon?: string; action?: string; topic?: str
 
 function parseTaggedJson<T>(raw: string, tag: string): { value?: T; nextText: string } {
   const patterns = [
-    new RegExp(`\\`\\`\\`${tag}\\s*([\\s\\S]*?)\\`\\`\\``, "i"),
-    new RegExp(`\\`\\`\\`json\\s*([\\s\\S]*?"${tag}"[\\s\\S]*?)\\`\\`\\``, "i"),
+    new RegExp("```" + tag + "\\s*([\\s\\S]*?)```", "i"),
+    new RegExp("```json\\s*([\\s\\S]*?\\\"" + tag + "\\\"[\\s\\S]*?)```", "i"),
   ];
 
   for (const pattern of patterns) {
