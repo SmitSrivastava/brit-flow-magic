@@ -418,6 +418,7 @@ Then output the mandatory \`\`\`concept\`\`\`, \`\`\`plays\`\`\` and \`\`\`follo
                 </div>
               ) : (
                 <div className="max-w-[95%] w-full space-y-3">
+                  {m.plays && m.plays.length > 0 && <PlaysGrid plays={m.plays} />}
                   {m.concept && (
                     <ConceptCardView card={m.concept} image={m.image} />
                   )}
