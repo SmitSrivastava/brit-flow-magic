@@ -75,6 +75,17 @@ const GLOBAL: Signal[] = [
 
 const TAG_PILLS = ["📊 Flavour table", "🗺️ Regional signals", "👥 FPD volumes", "🏭 Full portfolio"];
 
+const STARTER_QUESTIONS: Followup[] = [
+  { icon: "⚡", label: "Kaju Katli → which Britannia brands win? (FPD-sized)", action: "ask" },
+  { icon: "🌐", label: "Matcha for urban India — best Britannia route + cohort?", action: "ask" },
+  { icon: "🌶️", label: "Schezwan signal — is there a 50-50 / Treat savoury play?", action: "ask" },
+  { icon: "🧭", label: "Show Britannia's 4 Plays across the portfolio", action: "ask" },
+  { icon: "🍪", label: "Map NPD opportunities across all categories (incl. Wafers)", action: "ask" },
+  { icon: "📋", label: "Build a Creative Brief for the top opportunity", action: "ask" },
+  { icon: "🧪", label: "Design the Concept Test plan (FPD cohort + sampling)", action: "ask" },
+  { icon: "🎨", label: "Create Concept Card — Treat Kaju Katli Wafer", action: "concept_card", topic: "Treat Kaju Katli Wafer" },
+];
+
 const flavourQuestion = (f: string) =>
   `Explore **${f}** for Britannia — what is the best brand fit, opportunity mapping, and concept direction? Include FPD audience sizing.`;
 
