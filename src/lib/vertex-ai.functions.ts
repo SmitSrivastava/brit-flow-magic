@@ -158,6 +158,20 @@ export const testVertexConnection = createServerFn({ method: "POST" }).handler(a
 type ChatTurn = { role: "user" | "model"; text: string };
 type FollowupChip = { label: string; icon?: string; action?: string; topic?: string };
 
+function fallbackFollowups(question: string, answer: string): FollowupChip[] {
+  const source = `${question} ${answer}`.toLowerCase();
+  const flavour = source.includes("matcha") ? "Matcha" : source.includes("schezwan") ? "Schezwan" : source.includes("ras") ? "Ras Malai" : source.includes("tiramisu") ? "Tiramisu" : "Kaju Katli";
+  const conceptTopic = flavour === "Schezwan" ? "50-50 Schezwan Cracker" : flavour === "Matcha" ? "Pure Magic Matcha Cream" : `Treat ${flavour} Wafer`;
+  return [
+    { icon: "🎨", label: `Create Concept Card — ${conceptTopic}`, action: "concept_card", topic: conceptTopic },
+    { icon: "👥", label: `Which FPD cohorts should test ${flavour} first?`, action: "ask" },
+    { icon: "🍪", label: `Compare ${flavour} across Treat Wafer, Pure Magic, GoodDay and Winkin Cow`, action: "ask" },
+    { icon: "📋", label: `Draft the CMO-ready creative brief for ${conceptTopic}`, action: "ask" },
+    { icon: "🧪", label: `Build the concept test plan for ${conceptTopic}`, action: "ask" },
+    { icon: "📊", label: `Show Britannia's 4 Plays for ${flavour}`, action: "ask" },
+  ];
+}
+
 function parseTaggedJson<T>(raw: string, tag: string): { value?: T; nextText: string } {
   const patterns = [
     new RegExp("```" + tag + "\\s*([\\s\\S]*?)```", "i"),
@@ -214,6 +228,16 @@ async function generateFollowupsFromAnswer(args: {
     const parsed = JSON.parse(cleaned);
     return Array.isArray(parsed) ? parsed.slice(0, 7) : [];
   } catch {
+    const start = cleaned.indexOf("[");
+    const end = cleaned.lastIndexOf("]");
+    if (start >= 0 && end > start) {
+      try {
+        const parsed = JSON.parse(cleaned.slice(start, end + 1));
+        return Array.isArray(parsed) ? parsed.slice(0, 7) : [];
+      } catch {
+        return [];
+      }
+    }
     return [];
   }
 }
