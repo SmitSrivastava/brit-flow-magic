@@ -134,6 +134,27 @@ export type Database = {
         }
         Relationships: []
       }
+      fpd_volumes: {
+        Row: {
+          base_brand: string
+          created_at: string
+          id: number
+          volume: number
+        }
+        Insert: {
+          base_brand: string
+          created_at?: string
+          id?: number
+          volume: number
+        }
+        Update: {
+          base_brand?: string
+          created_at?: string
+          id?: number
+          volume?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
