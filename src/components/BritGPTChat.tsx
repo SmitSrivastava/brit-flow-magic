@@ -534,6 +534,14 @@ Then output the mandatory \`\`\`concept\`\`\`, \`\`\`plays\`\`\` and \`\`\`follo
         </span>{" "}
         &amp; Gemini
       </div>
+
+      {briefTopic && (
+        <ConceptBriefModal
+          topic={briefTopic}
+          onCancel={() => setBriefTopic(null)}
+          onSubmit={submitConceptBrief}
+        />
+      )}
     </div>
   );
 }
