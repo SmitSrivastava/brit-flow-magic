@@ -408,6 +408,43 @@ Then output the mandatory \`\`\`concept\`\`\`, \`\`\`plays\`\`\` and \`\`\`follo
         </div>
       )}
 
+      {/* Starter suggested questions — shown only before chat begins */}
+      {!chatStarted && (
+        <div className="space-y-2">
+          <div
+            className="text-[11px] uppercase tracking-[0.22em] font-bold"
+            style={{ color: "var(--britannia-red-deep)" }}
+          >
+            Suggested starting points · for Brand Managers & CMO
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {STARTER_QUESTIONS.map((q, i) => (
+              <button
+                key={i}
+                disabled={loading}
+                onClick={() => handleFollowup(q)}
+                className="text-sm px-4 py-2 rounded-full border font-medium transition hover:-translate-y-0.5 disabled:opacity-50"
+                style={{
+                  background:
+                    q.action === "concept_card"
+                      ? "color-mix(in oklch, oklch(0.7 0.18 300) 12%, white)"
+                      : "color-mix(in oklch, var(--britannia-red) 8%, white)",
+                  borderColor:
+                    q.action === "concept_card"
+                      ? "color-mix(in oklch, oklch(0.7 0.18 300) 35%, transparent)"
+                      : "color-mix(in oklch, var(--britannia-red) 25%, transparent)",
+                  color:
+                    q.action === "concept_card"
+                      ? "oklch(0.4 0.2 300)"
+                      : "var(--britannia-red-deep)",
+                }}
+              >
+                {q.icon} {q.label}
+              </button>
+            ))}
+          </div>
+
+
       {/* Messages */}
       {chatStarted && (
         <div
