@@ -229,7 +229,11 @@ export const askBritGPT = createServerFn({ method: "POST" })
             ...history,
             { role: "user", parts: [{ text: data.question }] },
           ],
-          generationConfig: { temperature: 0.65, maxOutputTokens: 4096 },
+          generationConfig: {
+            temperature: 0.65,
+            maxOutputTokens: 8192,
+            thinkingConfig: { thinkingBudget: 0 },
+          },
         }),
       });
       const json = (await res.json()) as {
