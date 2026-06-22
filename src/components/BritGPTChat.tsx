@@ -6,9 +6,11 @@ import { askBritGPT, generateConceptImage } from "@/lib/vertex-ai.functions";
 
 type Followup = { label: string; icon?: string; action?: string; topic?: string };
 
+type Play = { play: string; icon?: string; route: string; why: string; brands: string[] };
+
 type Message =
   | { role: "user"; text: string }
-  | { role: "model"; text: string; followups?: Followup[]; image?: string; concept?: ConceptCard };
+  | { role: "model"; text: string; followups?: Followup[]; image?: string; concept?: ConceptCard; plays?: Play[] };
 
 type ConceptCard = {
   image_prompt?: string;
@@ -18,7 +20,43 @@ type ConceptCard = {
   flavour?: string;
   pack?: string;
   occasion?: string;
+  states?: string[];
+  languages?: string[];
 };
+
+type Brief = {
+  topic: string;
+  brand: string;
+  format: string;
+  scope: "Pan India" | "Specific States";
+  states: string[];
+  languages: string[];
+  occasion: string;
+};
+
+const BRAND_OPTIONS = [
+  { brand: "Treat Wafer", format: "wafer" },
+  { brand: "Pure Magic", format: "premium cream biscuit" },
+  { brand: "GoodDay", format: "cookie" },
+  { brand: "GoodDay Cake", format: "cake" },
+  { brand: "Bourbon", format: "cream biscuit" },
+  { brand: "Jim-Jam", format: "cream biscuit" },
+  { brand: "50-50", format: "cracker" },
+  { brand: "MilkBikis", format: "milk biscuit" },
+  { brand: "Marie Gold", format: "tea biscuit" },
+  { brand: "NutriChoice", format: "healthy biscuit" },
+  { brand: "Winkin Cow", format: "milkshake" },
+  { brand: "Toastea", format: "rusk" },
+  { brand: "Layerz", format: "layered cake" },
+  { brand: "Little Hearts", format: "sugar biscuit" },
+];
+
+const STATE_OPTIONS = [
+  "Maharashtra","Gujarat","Rajasthan","Delhi NCR","Punjab","UP","MP","West Bengal","Odisha","Bihar",
+  "Tamil Nadu","Karnataka","Kerala","Telangana","Andhra Pradesh","Assam","NorthEast"
+];
+const LANG_OPTIONS = ["Hindi","English","Marathi","Gujarati","Bengali","Tamil","Telugu","Kannada","Malayalam","Punjabi"];
+const OCCASIONS = ["Diwali","Raksha Bandhan","Holi","Eid","Onam","Pongal","Durga Puja","Everyday Snack","Tea-time","Gifting","Kids Tiffin"];
 
 type Signal = { name: string; spicy?: boolean };
 
