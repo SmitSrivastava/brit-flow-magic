@@ -395,6 +395,7 @@ export const askBritGPT = createServerFn({ method: "POST" })
           answer: text,
         });
       }
+      if (followups.length === 0) followups = fallbackFollowups(data.question, text);
 
       return { ok: true as const, text, followups, concept, plays };
     } catch (err) {
