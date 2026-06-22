@@ -345,30 +345,31 @@ export const askBritGPT = createServerFn({ method: "POST" })
       }
 
       let text = raw;
-      let followups: Array<{ label: string; icon?: string; action?: string; topic?: string }> = [];
+      let followups: FollowupChip[] = [];
       let concept: { image_prompt?: string; product_name?: string; brand_route?: string; format?: string; flavour?: string; pack?: string; occasion?: string; states?: string[]; languages?: string[] } | undefined;
       let plays: Array<{ play: string; icon?: string; route: string; why: string; brands: string[] }> = [];
 
-      const fm = raw.match(/```followups\s*([\s\S]*?)```/i);
-      if (fm) {
-        try {
-          const parsed = JSON.parse(fm[1].trim());
-          if (Array.isArray(parsed)) followups = parsed;
-        } catch { /* ignore */ }
-        text = text.replace(fm[0], "").trim();
-      }
-      const cm = raw.match(/```concept\s*([\s\S]*?)```/i);
-      if (cm) {
-        try { concept = JSON.parse(cm[1].trim()); } catch { /* ignore */ }
-        text = text.replace(cm[0], "").trim();
-      }
-      const pm = raw.match(/```plays\s*([\s\S]*?)```/i);
-      if (pm) {
-        try {
-          const parsed = JSON.parse(pm[1].trim());
-          if (Array.isArray(parsed)) plays = parsed;
-        } catch { /* ignore */ }
-        text = text.replace(pm[0], "").trim();
+      const parsedFollowups = parseTaggedJson<FollowupChip[]>(text, "followups");
+      if (Array.isArray(parsedFollowups.value)) followups = parsedFollowups.value;
+      text = parsedFollowups.nextText;
+
+      const parsedConcept = parseTaggedJson<typeof concept>(text, "concept");
+      if (parsedConcept.value && !Array.isArray(parsedConcept.value)) concept = parsedConcept.value;
+      text = parsedConcept.nextText;
+
+      const parsedPlays = parseTaggedJson<typeof plays>(text, "plays");
+      if (Array.isArray(parsedPlays.value)) plays = parsedPlays.value;
+      text = parsedPlays.nextText;
+
+      if (followups.length === 0) {
+        followups = await generateFollowupsFromAnswer({
+          token,
+          projectId,
+          location,
+          model,
+          question: data.question,
+          answer: text,
+        });
       }
 
       return { ok: true as const, text, followups, concept, plays };
