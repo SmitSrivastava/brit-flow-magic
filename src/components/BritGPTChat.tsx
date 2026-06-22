@@ -98,6 +98,8 @@ export function BritGPTChat({ onBack }: { onBack: () => void }) {
   const [hideSpicy, setHideSpicy] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const [briefTopic, setBriefTopic] = useState<string | null>(null);
+
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages, loading]);
@@ -116,7 +118,7 @@ export function BritGPTChat({ onBack }: { onBack: () => void }) {
       if (r.ok) {
         setMessages((prev) => [
           ...prev,
-          { role: "model", text: cleanText(r.text), followups: r.followups, concept: r.concept },
+          { role: "model", text: cleanText(r.text), followups: r.followups, concept: r.concept, plays: r.plays },
         ]);
       } else {
         setMessages((prev) => [...prev, { role: "model", text: `**Error:** ${r.message}` }]);
@@ -128,28 +130,50 @@ export function BritGPTChat({ onBack }: { onBack: () => void }) {
     }
   }
 
-  async function createConceptCard(topic: string) {
+  function openConceptBrief(topic: string) {
     if (loading) return;
-    const question = `Create a complete **Concept Card** for **${topic}** as a Britannia NPD. Structure with these sections (markdown headings + tables):
-1. ## 🍪 Concept Name & Tagline
-2. ## 🏭 Brand Route & Portfolio Cross-Map  (table)
-3. ## 🎨 Flavour, Format & Pack
-4. ## 👥 Target FPD Cohort  (cite actual base-brand volumes)
-5. ## 📣 Communication Angle & Claim
-6. ## 🎬 Influencer + Media Plan
-7. ## ✅ Why It Wins
-8. ## 🧪 Validation Plan
+    setBriefTopic(topic);
+  }
 
-Then output the mandatory \`\`\`concept ...\`\`\` and \`\`\`followups ...\`\`\` JSON blocks. Do NOT output any other raw JSON in the body.`;
+  async function submitConceptBrief(brief: Brief) {
+    setBriefTopic(null);
+    if (loading) return;
+    const statesLine = brief.scope === "Pan India"
+      ? "Pan India activation"
+      : `Specific states: ${brief.states.join(", ") || "—"}`;
+    const langLine = brief.languages.length ? brief.languages.join(", ") : "Hindi, English";
+    const question = `Create a complete **Concept Card** for **${brief.topic}** as a Britannia NPD.
+
+**Brief locked by user — RESPECT EXACTLY:**
+- Brand route: **${brief.brand}**
+- Format: **${brief.format}** (image_prompt MUST depict this exact format — not a generic cookie/sweet)
+- Geographic scope: **${statesLine}**
+- Languages: **${langLine}**
+- Occasion: **${brief.occasion}**
+
+Structure with markdown headings + tables:
+1. ## 🍪 Concept Name & Tagline (tagline in each briefed language)
+2. ## 🏭 Brand Route & Portfolio Cross-Map (anchor brand = ${brief.brand}; show 2-3 adjacent Britannia brands)
+3. ## 🎨 Flavour, Format & Pack (format = ${brief.format})
+4. ## 🗺️ Regional Rollout (${statesLine})
+5. ## 👥 Target FPD Cohort (cite actual base-brand volumes)
+6. ## 📣 Communication Angle & Claim (per-language)
+7. ## 🎬 Influencer + Media Plan (region/language-specific)
+8. ## ✅ Why It Wins
+9. ## 🧪 Validation Plan
+
+Then output the mandatory \`\`\`concept\`\`\`, \`\`\`plays\`\`\` and \`\`\`followups\`\`\` JSON blocks. The concept's "format" and "image_prompt" MUST match "${brief.format}".`;
     const history = messages.map((m) => ({ role: m.role, text: m.text }));
-    setMessages((prev) => [...prev, { role: "user", text: `🎨 Create Concept Card — ${topic}` }]);
+    setMessages((prev) => [
+      ...prev,
+      { role: "user", text: `🎨 Concept Brief — ${brief.topic} · ${brief.brand} · ${brief.format} · ${statesLine} · ${langLine} · ${brief.occasion}` },
+    ]);
     setLoading(true);
     try {
       const textRes = await ask({ data: { question, history } });
+      const fallback = `Britannia ${brief.brand} ${brief.format} pack mockup, ${brief.topic} flavour, photoreal product hero shot of the actual packaged ${brief.format} on a cream background, gold festive accents, studio lighting, 1:1 square.`;
       const imagePrompt =
-        textRes.ok && textRes.concept?.image_prompt
-          ? textRes.concept.image_prompt
-          : `Britannia branded product packaging concept for "${topic}". Photoreal product hero shot of the actual packaged biscuit/cookie/wafer pack on a cream background, studio lighting, 1:1 square.`;
+        textRes.ok && textRes.concept?.image_prompt ? textRes.concept.image_prompt : fallback;
       const imgRes = await genImage({ data: { prompt: imagePrompt } });
       setMessages((prev) => [
         ...prev,
@@ -158,6 +182,7 @@ Then output the mandatory \`\`\`concept ...\`\`\` and \`\`\`followups ...\`\`\` 
           text: textRes.ok ? cleanText(textRes.text) : `**Error:** ${textRes.message}`,
           followups: textRes.ok ? textRes.followups : undefined,
           concept: textRes.ok ? textRes.concept : undefined,
+          plays: textRes.ok ? textRes.plays : undefined,
           image: imgRes.ok ? imgRes.dataUrl : undefined,
         },
       ]);
@@ -167,7 +192,7 @@ Then output the mandatory \`\`\`concept ...\`\`\` and \`\`\`followups ...\`\`\` 
   }
 
   function handleFollowup(f: Followup) {
-    if (f.action === "concept_card" && f.topic) createConceptCard(f.topic);
+    if (f.action === "concept_card" && f.topic) openConceptBrief(f.topic);
     else sendQuestion(f.label);
   }
 
