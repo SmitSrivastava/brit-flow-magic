@@ -237,14 +237,26 @@ export const askBritGPT = createServerFn({ method: "POST" })
         }),
       });
       const json = (await res.json()) as {
-        candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+        candidates?: Array<{
+          content?: { parts?: Array<{ text?: string }> };
+          finishReason?: string;
+        }>;
         error?: { message?: string };
+        promptFeedback?: { blockReason?: string };
       };
       if (!res.ok) {
         return { ok: false as const, message: json?.error?.message ?? `HTTP ${res.status}` };
       }
       const raw =
         json.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+      if (!raw.trim()) {
+        const reason =
+          json.candidates?.[0]?.finishReason ?? json.promptFeedback?.blockReason ?? "empty";
+        return {
+          ok: false as const,
+          message: `Model returned no text (finishReason=${reason}). Try a shorter question or retry.`,
+        };
+      }
 
       let text = raw;
       let followups: Array<{ label: string; icon?: string; action?: string; topic?: string }> = [];
