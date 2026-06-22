@@ -231,8 +231,8 @@ export const askBritGPT = createServerFn({ method: "POST" })
             { role: "user", parts: [{ text: data.question }] },
           ],
           generationConfig: {
-            temperature: 0.65,
-            maxOutputTokens: 8192,
+            temperature: 0.7,
+            maxOutputTokens: 65535,
             thinkingConfig: { thinkingBudget: 0 },
           },
         }),
