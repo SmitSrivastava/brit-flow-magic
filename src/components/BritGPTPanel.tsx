@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { testVertexConnection } from "@/lib/vertex-ai.functions";
+import { BritGPTChat } from "@/components/BritGPTChat";
 
 type DemoKey = "india" | "global";
 
@@ -19,6 +20,7 @@ const DEMOS: Record<DemoKey, { label: string; url: string; subtitle: string }> =
 
 export function BritGPTPanel() {
   const [active, setActive] = useState<DemoKey>("india");
+  const [view, setView] = useState<"demo" | "fpd">("demo");
   const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(null);
   const ping = useServerFn(testVertexConnection);
 
@@ -34,8 +36,13 @@ export function BritGPTPanel() {
 
   const demo = DEMOS[active];
 
+  if (view === "fpd") {
+    return <BritGPTChat onBack={() => setView("demo")} />;
+  }
+
   return (
     <div className="space-y-5">
+
       {/* Demo selector */}
       <div
         className="rounded-2xl border p-5 flex flex-wrap items-center justify-between gap-4"
