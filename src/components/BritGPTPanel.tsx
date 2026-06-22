@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { testVertexConnection } from "@/lib/vertex-ai.functions";
+import { BritGPTChat } from "@/components/BritGPTChat";
 
 type DemoKey = "india" | "global";
 
@@ -19,6 +20,7 @@ const DEMOS: Record<DemoKey, { label: string; url: string; subtitle: string }> =
 
 export function BritGPTPanel() {
   const [active, setActive] = useState<DemoKey>("india");
+  const [view, setView] = useState<"demo" | "fpd">("demo");
   const [status, setStatus] = useState<{ ok: boolean; message: string } | null>(null);
   const ping = useServerFn(testVertexConnection);
 
@@ -34,8 +36,13 @@ export function BritGPTPanel() {
 
   const demo = DEMOS[active];
 
+  if (view === "fpd") {
+    return <BritGPTChat onBack={() => setView("demo")} />;
+  }
+
   return (
     <div className="space-y-5">
+
       {/* Demo selector */}
       <div
         className="rounded-2xl border p-5 flex flex-wrap items-center justify-between gap-4"
@@ -113,6 +120,37 @@ export function BritGPTPanel() {
           allow="clipboard-read; clipboard-write"
         />
       </div>
+
+      {/* BritGPT FPD CTA — opens chat workspace with all Consuma + FPD context */}
+      <div
+        className="rounded-2xl border p-5 flex flex-wrap items-center justify-between gap-4"
+        style={{
+          background: "linear-gradient(135deg, color-mix(in oklch, var(--britannia-red) 8%, white), white)",
+          borderColor: "color-mix(in oklch, var(--britannia-red) 25%, transparent)",
+        }}
+      >
+        <div>
+          <div className="text-[11px] uppercase tracking-[0.25em] font-bold" style={{ color: "var(--britannia-red)" }}>
+            Next step
+          </div>
+          <h3 className="text-xl md:text-2xl font-extrabold mt-1" style={{ color: "var(--britannia-red-deep)" }}>
+            Done exploring Consuma? Take it into <em className="font-serif italic">BritGPT FPD</em>.
+          </h3>
+          <p className="text-sm text-muted-foreground mt-1">
+            Loads Consuma flavour signals + Britannia first-party data and lets your team chat with Gemini as a Marketing,
+            Audience & Creative strategist.
+          </p>
+        </div>
+        <button
+          onClick={() => setView("fpd")}
+          className="px-6 py-3 rounded-full text-sm font-bold text-white transition hover:-translate-y-0.5"
+          style={{ background: "var(--britannia-red)", boxShadow: "var(--shadow-britannia)" }}
+        >
+          Open BritGPT FPD →
+        </button>
+      </div>
+
+
 
       {/* Vertex AI status */}
       <div
