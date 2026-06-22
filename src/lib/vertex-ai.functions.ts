@@ -156,6 +156,91 @@ export const testVertexConnection = createServerFn({ method: "POST" }).handler(a
 });
 
 type ChatTurn = { role: "user" | "model"; text: string };
+type FollowupChip = { label: string; icon?: string; action?: string; topic?: string };
+
+function fallbackFollowups(question: string, answer: string): FollowupChip[] {
+  const source = `${question} ${answer}`.toLowerCase();
+  const flavour = source.includes("matcha") ? "Matcha" : source.includes("schezwan") ? "Schezwan" : source.includes("ras") ? "Ras Malai" : source.includes("tiramisu") ? "Tiramisu" : "Kaju Katli";
+  const conceptTopic = flavour === "Schezwan" ? "50-50 Schezwan Cracker" : flavour === "Matcha" ? "Pure Magic Matcha Cream" : `Treat ${flavour} Wafer`;
+  return [
+    { icon: "🎨", label: `Create Concept Card — ${conceptTopic}`, action: "concept_card", topic: conceptTopic },
+    { icon: "👥", label: `Which FPD cohorts should test ${flavour} first?`, action: "ask" },
+    { icon: "🍪", label: `Compare ${flavour} across Treat Wafer, Pure Magic, GoodDay and Winkin Cow`, action: "ask" },
+    { icon: "📋", label: `Draft the CMO-ready creative brief for ${conceptTopic}`, action: "ask" },
+    { icon: "🧪", label: `Build the concept test plan for ${conceptTopic}`, action: "ask" },
+    { icon: "📊", label: `Show Britannia's 4 Plays for ${flavour}`, action: "ask" },
+  ];
+}
+
+function parseTaggedJson<T>(raw: string, tag: string): { value?: T; nextText: string } {
+  const patterns = [
+    new RegExp("```" + tag + "\\s*([\\s\\S]*?)```", "i"),
+    new RegExp("```json\\s*([\\s\\S]*?\\\"" + tag + "\\\"[\\s\\S]*?)```", "i"),
+  ];
+
+  for (const pattern of patterns) {
+    const match = raw.match(pattern);
+    if (!match) continue;
+    try {
+      const parsed = JSON.parse(match[1].trim());
+      const value = Array.isArray(parsed) ? parsed : parsed?.[tag] ?? parsed;
+      return { value, nextText: raw.replace(match[0], "").trim() };
+    } catch {
+      return { nextText: raw.replace(match[0], "").trim() };
+    }
+  }
+
+  return { nextText: raw };
+}
+
+async function generateFollowupsFromAnswer(args: {
+  token: string;
+  projectId: string;
+  location: string;
+  model: string;
+  question: string;
+  answer: string;
+}): Promise<FollowupChip[]> {
+  const url = `https://${args.location}-aiplatform.googleapis.com/v1/projects/${args.projectId}/locations/${args.location}/publishers/google/models/${args.model}:generateContent`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${args.token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      systemInstruction: {
+        parts: [{ text: "You generate only next-step question chips for BritGPT. Return strict JSON only, no markdown." }],
+      },
+      contents: [{
+        role: "user",
+        parts: [{ text: `Based on this user question and BritGPT answer, suggest 6 context-specific next questions for Britannia brand managers/CMO. Include at least one concept_card chip when a product route is clear. Use this exact JSON array shape: [{"label":"...","icon":"⚡","action":"ask"},{"label":"Create Concept Card — Brand Flavour Format","icon":"🎨","action":"concept_card","topic":"Brand Flavour Format"}].\n\nUSER QUESTION:\n${args.question}\n\nBRITGPT ANSWER:\n${args.answer.slice(0, 12000)}` }],
+      }],
+      generationConfig: {
+        temperature: 0.45,
+        maxOutputTokens: 2048,
+        thinkingConfig: { thinkingBudget: 0 },
+      },
+    }),
+  });
+  if (!res.ok) return [];
+  const json = (await res.json()) as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
+  const raw = json.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+  const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/```$/i, "").trim();
+  try {
+    const parsed = JSON.parse(cleaned);
+    return Array.isArray(parsed) ? parsed.slice(0, 7) : [];
+  } catch {
+    const start = cleaned.indexOf("[");
+    const end = cleaned.lastIndexOf("]");
+    if (start >= 0 && end > start) {
+      try {
+        const parsed = JSON.parse(cleaned.slice(start, end + 1));
+        return Array.isArray(parsed) ? parsed.slice(0, 7) : [];
+      } catch {
+        return [];
+      }
+    }
+    return [];
+  }
+}
 
 const SYSTEM_PROMPT = `You are **BritGPT FPD**, the AI strategist powering Britannia's "Many Indias" innovation flywheel. You combine three roles in every reply — **Marketing & Brand Manager**, **Audience Planner (FPD)**, and **Creative & Media Planner** — and answer as one unified expert.
 
@@ -284,31 +369,32 @@ export const askBritGPT = createServerFn({ method: "POST" })
       }
 
       let text = raw;
-      let followups: Array<{ label: string; icon?: string; action?: string; topic?: string }> = [];
+      let followups: FollowupChip[] = [];
       let concept: { image_prompt?: string; product_name?: string; brand_route?: string; format?: string; flavour?: string; pack?: string; occasion?: string; states?: string[]; languages?: string[] } | undefined;
       let plays: Array<{ play: string; icon?: string; route: string; why: string; brands: string[] }> = [];
 
-      const fm = raw.match(/```followups\s*([\s\S]*?)```/i);
-      if (fm) {
-        try {
-          const parsed = JSON.parse(fm[1].trim());
-          if (Array.isArray(parsed)) followups = parsed;
-        } catch { /* ignore */ }
-        text = text.replace(fm[0], "").trim();
-      }
-      const cm = raw.match(/```concept\s*([\s\S]*?)```/i);
-      if (cm) {
-        try { concept = JSON.parse(cm[1].trim()); } catch { /* ignore */ }
-        text = text.replace(cm[0], "").trim();
-      }
-      const pm = raw.match(/```plays\s*([\s\S]*?)```/i);
-      if (pm) {
-        try {
-          const parsed = JSON.parse(pm[1].trim());
-          if (Array.isArray(parsed)) plays = parsed;
-        } catch { /* ignore */ }
-        text = text.replace(pm[0], "").trim();
-      }
+      const parsedFollowups = parseTaggedJson<FollowupChip[]>(text, "followups");
+      if (Array.isArray(parsedFollowups.value)) followups = parsedFollowups.value;
+      text = parsedFollowups.nextText;
+
+      const parsedConcept = parseTaggedJson<typeof concept>(text, "concept");
+      if (parsedConcept.value && !Array.isArray(parsedConcept.value)) concept = parsedConcept.value;
+      text = parsedConcept.nextText;
+
+      const parsedPlays = parseTaggedJson<typeof plays>(text, "plays");
+      if (Array.isArray(parsedPlays.value)) plays = parsedPlays.value;
+      text = parsedPlays.nextText;
+
+      const responseSpecificFollowups = await generateFollowupsFromAnswer({
+        token,
+        projectId,
+        location,
+        model,
+        question: data.question,
+        answer: text,
+      });
+      if (responseSpecificFollowups.length > 0) followups = responseSpecificFollowups;
+      if (followups.length === 0) followups = fallbackFollowups(data.question, text);
 
       return { ok: true as const, text, followups, concept, plays };
     } catch (err) {
