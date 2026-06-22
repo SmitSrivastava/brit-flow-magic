@@ -56,19 +56,26 @@ export function BritGPTChat({ onBack }: { onBack: () => void }) {
 
   async function createConceptCard(topic: string) {
     if (loading) return;
-    const question = `Create a complete **Concept Card** for **${topic}** as a Britannia NPD. Include: (1) Concept name & tagline, (2) Target FPD cohort and rationale tied to base-brand volumes, (3) Flavour & format, (4) Pack/price idea, (5) Communication angle, (6) Influencer + media plan, (7) Why it wins (tie to Consuma signals). End with the standard followups block.`;
+    const question = `Create a complete **Concept Card** for **${topic}** as a Britannia NPD. Structure with these sections (use markdown headings + tables):
+1. ## 🍪 Concept Name & Tagline
+2. ## 🏭 Brand Route & Portfolio Cross-Map  (table — show ALL plausible Britannia brands/formats this idea could plug into, pick the lead one)
+3. ## 🎨 Flavour, Format & Pack  (chosen format e.g. cream biscuit / wafer / cake / rusk / shake — be specific)
+4. ## 👥 Target FPD Cohort  (cite actual base-brand volumes)
+5. ## 📣 Communication Angle & Claim
+6. ## 🎬 Influencer + Media Plan  (regional creators, channels)
+7. ## ✅ Why It Wins  (tie to specific Consuma signals/growth %)
+8. ## 🧪 Validation Plan  (concept test → FPD pilot → commerce)
+
+Then output the mandatory \`\`\`concept ... \`\`\` JSON block (with a precise image_prompt that describes the ACTUAL packaged product format you chose — e.g. a Britannia GoodDay cream cookie pack, NOT a generic plate of mithai) and the \`\`\`followups ... \`\`\` block.`;
     const history = messages.map((m) => ({ role: m.role, text: m.text }));
     setMessages((prev) => [...prev, { role: "user", text: `🎨 Create Concept Card — ${topic}` }]);
     setLoading(true);
     try {
-      const [textRes, imgRes] = await Promise.all([
-        ask({ data: { question, history } }),
-        genImage({
-          data: {
-            prompt: `Premium Britannia product packaging concept render for "${topic}" — appetizing, photoreal, studio lighting, Indian/festive cues where relevant, clean cream background, product hero shot, 1:1 square.`,
-          },
-        }),
-      ]);
+      const textRes = await ask({ data: { question, history } });
+      const imagePrompt = textRes.ok && textRes.concept?.image_prompt
+        ? textRes.concept.image_prompt
+        : `Britannia branded product packaging concept for "${topic}". Photoreal product hero shot of the packaged biscuit/cookie/wafer pack on a clean cream background, studio lighting, Indian festive cues, 1:1 square. Show the actual packaged product, not raw sweets.`;
+      const imgRes = await genImage({ data: { prompt: imagePrompt } });
       setMessages((prev) => [
         ...prev,
         {
