@@ -234,7 +234,7 @@ export const askBritGPT = createServerFn({ method: "POST" })
             ...history,
             { role: "user", parts: [{ text: data.question }] },
           ],
-          generationConfig: { temperature: 0.6, maxOutputTokens: 2048 },
+          generationConfig: { temperature: 0.65, maxOutputTokens: 4096 },
         }),
       });
       const json = (await res.json()) as {
@@ -247,21 +247,25 @@ export const askBritGPT = createServerFn({ method: "POST" })
       const raw =
         json.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
 
-      // Extract followups JSON block
-      let followups: Array<{ label: string; icon?: string; action?: string; topic?: string }> = [];
       let text = raw;
-      const m = raw.match(/```followups\s*([\s\S]*?)```/i);
-      if (m) {
+      let followups: Array<{ label: string; icon?: string; action?: string; topic?: string }> = [];
+      let concept: { image_prompt?: string; product_name?: string; brand_route?: string; format?: string; flavour?: string; pack?: string; occasion?: string } | undefined;
+
+      const fm = raw.match(/```followups\s*([\s\S]*?)```/i);
+      if (fm) {
         try {
-          const parsed = JSON.parse(m[1].trim());
+          const parsed = JSON.parse(fm[1].trim());
           if (Array.isArray(parsed)) followups = parsed;
-        } catch {
-          // ignore parse errors
-        }
-        text = raw.replace(m[0], "").trim();
+        } catch { /* ignore */ }
+        text = text.replace(fm[0], "").trim();
+      }
+      const cm = raw.match(/```concept\s*([\s\S]*?)```/i);
+      if (cm) {
+        try { concept = JSON.parse(cm[1].trim()); } catch { /* ignore */ }
+        text = text.replace(cm[0], "").trim();
       }
 
-      return { ok: true as const, text, followups };
+      return { ok: true as const, text, followups, concept };
     } catch (err) {
       return { ok: false as const, message: err instanceof Error ? err.message : String(err) };
     }
