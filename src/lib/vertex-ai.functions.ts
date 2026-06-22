@@ -156,6 +156,67 @@ export const testVertexConnection = createServerFn({ method: "POST" }).handler(a
 });
 
 type ChatTurn = { role: "user" | "model"; text: string };
+type FollowupChip = { label: string; icon?: string; action?: string; topic?: string };
+
+function parseTaggedJson<T>(raw: string, tag: string): { value?: T; nextText: string } {
+  const patterns = [
+    new RegExp(`\\`\\`\\`${tag}\\s*([\\s\\S]*?)\\`\\`\\``, "i"),
+    new RegExp(`\\`\\`\\`json\\s*([\\s\\S]*?"${tag}"[\\s\\S]*?)\\`\\`\\``, "i"),
+  ];
+
+  for (const pattern of patterns) {
+    const match = raw.match(pattern);
+    if (!match) continue;
+    try {
+      const parsed = JSON.parse(match[1].trim());
+      const value = Array.isArray(parsed) || tag === "concept" ? parsed : parsed?.[tag];
+      return { value, nextText: raw.replace(match[0], "").trim() };
+    } catch {
+      return { nextText: raw.replace(match[0], "").trim() };
+    }
+  }
+
+  return { nextText: raw };
+}
+
+async function generateFollowupsFromAnswer(args: {
+  token: string;
+  projectId: string;
+  location: string;
+  model: string;
+  question: string;
+  answer: string;
+}): Promise<FollowupChip[]> {
+  const url = `https://${args.location}-aiplatform.googleapis.com/v1/projects/${args.projectId}/locations/${args.location}/publishers/google/models/${args.model}:generateContent`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${args.token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      systemInstruction: {
+        parts: [{ text: "You generate only next-step question chips for BritGPT. Return strict JSON only, no markdown." }],
+      },
+      contents: [{
+        role: "user",
+        parts: [{ text: `Based on this user question and BritGPT answer, suggest 6 context-specific next questions for Britannia brand managers/CMO. Include at least one concept_card chip when a product route is clear. Use this exact JSON array shape: [{"label":"...","icon":"⚡","action":"ask"},{"label":"Create Concept Card — Brand Flavour Format","icon":"🎨","action":"concept_card","topic":"Brand Flavour Format"}].\n\nUSER QUESTION:\n${args.question}\n\nBRITGPT ANSWER:\n${args.answer.slice(0, 12000)}` }],
+      }],
+      generationConfig: {
+        temperature: 0.45,
+        maxOutputTokens: 2048,
+        thinkingConfig: { thinkingBudget: 0 },
+      },
+    }),
+  });
+  if (!res.ok) return [];
+  const json = (await res.json()) as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> };
+  const raw = json.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+  const cleaned = raw.replace(/^```(?:json)?\s*/i, "").replace(/```$/i, "").trim();
+  try {
+    const parsed = JSON.parse(cleaned);
+    return Array.isArray(parsed) ? parsed.slice(0, 7) : [];
+  } catch {
+    return [];
+  }
+}
 
 const SYSTEM_PROMPT = `You are **BritGPT FPD**, the AI strategist powering Britannia's "Many Indias" innovation flywheel. You combine three roles in every reply — **Marketing & Brand Manager**, **Audience Planner (FPD)**, and **Creative & Media Planner** — and answer as one unified expert.
 
