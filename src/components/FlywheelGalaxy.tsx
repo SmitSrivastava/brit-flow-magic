@@ -162,6 +162,19 @@ export function FlywheelGalaxy({ onSelectStage, showExternal }: Props) {
         </div>
         <Flywheel wheel={creative} size={CR_SIZE} onSelectStage={onSelectStage} spinDuration={50} />
       </div>
+
+      {/* External Intelligence — Phase 2 (left side) */}
+      {showExternal && (
+        <div className="absolute" style={{ left: 20, top: 920 }}>
+          <div className="text-center mb-2">
+            <div className="text-[11px] uppercase tracking-[0.25em] font-bold" style={{ color: "oklch(0.45 0.14 220)" }}>
+              Phase 2 · External Intelligence
+            </div>
+          </div>
+          <Flywheel wheel={external} size={340} onSelectStage={onSelectStage} spinDuration={48} />
+        </div>
+      )}
     </div>
+
   );
 }
