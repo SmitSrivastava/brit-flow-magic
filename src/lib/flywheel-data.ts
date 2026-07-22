@@ -8,7 +8,7 @@ export type Stage = {
 };
 
 export type Wheel = {
-  id: "britgpt" | "creative" | "aeo";
+  id: "britgpt" | "creative" | "aeo" | "external";
   name: string;
   tagline: string;
   color: string;
