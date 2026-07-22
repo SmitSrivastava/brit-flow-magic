@@ -40,6 +40,7 @@ function Index() {
           <div className="mt-6 inline-flex p-1 rounded-full bg-white/15 backdrop-blur">
             {([
               { k: "flywheel", label: "Flywheel Architecture" },
+              { k: "phase2", label: "Phase-2" },
               { k: "britgpt", label: "BritGPT" },
             ] as { k: TabKey; label: string }[]).map((t) => (
               <button
