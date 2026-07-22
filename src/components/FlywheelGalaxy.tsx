@@ -108,7 +108,27 @@ export function FlywheelGalaxy({ onSelectStage, showExternal }: Props) {
         <text x={(crActivate.x + bg4.x) / 2 - 80} y={Math.max(crActivate.y, bg4.y) + 235} fill="var(--creative)" fontSize="12" fontWeight="700">
           Creative variants → Activate
         </text>
+
+        {/* External Intelligence → BritGPT Activate (bg4) */}
+        {showExternal && (
+          <>
+            <marker id="arr-ext" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(0.55 0.14 220)" />
+            </marker>
+            <motion.path
+              d={`M 380 1100 C 480 1100, 520 ${bg4.y}, ${bg4.x - 90} ${bg4.y + 10}`}
+              stroke="oklch(0.55 0.14 220)" strokeWidth="2.5" fill="none"
+              strokeDasharray="8 6" markerEnd="url(#arr-ext)"
+              animate={{ strokeDashoffset: [0, -28] }}
+              transition={{ duration: 2, ease: "linear", repeat: Infinity, delay: 0.6 }}
+            />
+            <text x={230} y={1075} fill="oklch(0.45 0.14 220)" fontSize="12" fontWeight="700">
+              Geo · Weather · Sales → Activate
+            </text>
+          </>
+        )}
       </svg>
+
 
       {/* AEO/GEO top center */}
       <div className="absolute" style={{ left: AEO_CX - AEO_SIZE / 2, top: AEO_TOP - 28 }}>
