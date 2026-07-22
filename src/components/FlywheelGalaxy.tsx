@@ -35,7 +35,7 @@ function stagePos(cx: number, cy: number, r: number, i: number, n = 6) {
   return { x: cx + Math.cos(angle) * (r * 0.78), y: cy + Math.sin(angle) * (r * 0.78) };
 }
 
-export function FlywheelGalaxy({ onSelectStage }: Props) {
+export function FlywheelGalaxy({ onSelectStage, showExternal }: Props) {
   // Specific box anchors per architecture
   const bg1 = stagePos(BG_CX, BG_CY, BG_R, 0); // Detect Market Shifts (top)
   const bg2 = stagePos(BG_CX, BG_CY, BG_R, 1); // Connect to Consumers
