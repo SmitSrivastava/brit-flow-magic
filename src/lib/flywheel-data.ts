@@ -209,7 +209,7 @@ export const aeo: Wheel = {
 };
 
 export const external: Wheel = {
-  id: "aeo", // reuse type slot; styled separately
+  id: "external",
   name: "External Intelligence",
   tagline: "Geo · Weather · Commerce signals into Activate",
   color: "oklch(0.55 0.14 220)",
