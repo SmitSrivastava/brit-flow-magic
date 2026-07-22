@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-type TabKey = "flywheel" | "britgpt";
+type TabKey = "flywheel" | "phase2" | "britgpt";
 
 function Index() {
   const [selected, setSelected] = useState<{ wheel: Wheel; stage: Stage } | null>(null);
