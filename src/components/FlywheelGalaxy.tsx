@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Flywheel } from "@/components/Flywheel";
-import { britgpt, creative, aeo, type Wheel } from "@/lib/flywheel-data";
+import { britgpt, creative, aeo, external, type Wheel } from "@/lib/flywheel-data";
 
-type Props = { onSelectStage: (wheel: Wheel, stageId: string) => void };
+type Props = { onSelectStage: (wheel: Wheel, stageId: string) => void; showExternal?: boolean };
+
 
 // Layout coordinates (must match the absolute-positioned wheels below)
 const VW = 1200;
@@ -34,7 +35,7 @@ function stagePos(cx: number, cy: number, r: number, i: number, n = 6) {
   return { x: cx + Math.cos(angle) * (r * 0.78), y: cy + Math.sin(angle) * (r * 0.78) };
 }
 
-export function FlywheelGalaxy({ onSelectStage }: Props) {
+export function FlywheelGalaxy({ onSelectStage, showExternal }: Props) {
   // Specific box anchors per architecture
   const bg1 = stagePos(BG_CX, BG_CY, BG_R, 0); // Detect Market Shifts (top)
   const bg2 = stagePos(BG_CX, BG_CY, BG_R, 1); // Connect to Consumers
@@ -107,7 +108,27 @@ export function FlywheelGalaxy({ onSelectStage }: Props) {
         <text x={(crActivate.x + bg4.x) / 2 - 80} y={Math.max(crActivate.y, bg4.y) + 235} fill="var(--creative)" fontSize="12" fontWeight="700">
           Creative variants → Activate
         </text>
+
+        {/* External Intelligence → BritGPT Activate (bg4) */}
+        {showExternal && (
+          <>
+            <marker id="arr-ext" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(0.55 0.14 220)" />
+            </marker>
+            <motion.path
+              d={`M 380 1100 C 480 1100, 520 ${bg4.y}, ${bg4.x - 90} ${bg4.y + 10}`}
+              stroke="oklch(0.55 0.14 220)" strokeWidth="2.5" fill="none"
+              strokeDasharray="8 6" markerEnd="url(#arr-ext)"
+              animate={{ strokeDashoffset: [0, -28] }}
+              transition={{ duration: 2, ease: "linear", repeat: Infinity, delay: 0.6 }}
+            />
+            <text x={230} y={1075} fill="oklch(0.45 0.14 220)" fontSize="12" fontWeight="700">
+              Geo · Weather · Sales → Activate
+            </text>
+          </>
+        )}
       </svg>
+
 
       {/* AEO/GEO top center */}
       <div className="absolute" style={{ left: AEO_CX - AEO_SIZE / 2, top: AEO_TOP - 28 }}>
@@ -141,6 +162,19 @@ export function FlywheelGalaxy({ onSelectStage }: Props) {
         </div>
         <Flywheel wheel={creative} size={CR_SIZE} onSelectStage={onSelectStage} spinDuration={50} />
       </div>
+
+      {/* External Intelligence — Phase 2 (left side) */}
+      {showExternal && (
+        <div className="absolute" style={{ left: 20, top: 920 }}>
+          <div className="text-center mb-2">
+            <div className="text-[11px] uppercase tracking-[0.25em] font-bold" style={{ color: "oklch(0.45 0.14 220)" }}>
+              Phase 2 · External Intelligence
+            </div>
+          </div>
+          <Flywheel wheel={external} size={340} onSelectStage={onSelectStage} spinDuration={48} />
+        </div>
+      )}
     </div>
+
   );
 }

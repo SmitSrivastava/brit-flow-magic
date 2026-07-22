@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-type TabKey = "flywheel" | "britgpt";
+type TabKey = "flywheel" | "phase2" | "britgpt";
 
 function Index() {
   const [selected, setSelected] = useState<{ wheel: Wheel; stage: Stage } | null>(null);
@@ -40,6 +40,7 @@ function Index() {
           <div className="mt-6 inline-flex p-1 rounded-full bg-white/15 backdrop-blur">
             {([
               { k: "flywheel", label: "Flywheel Architecture" },
+              { k: "phase2", label: "Phase-2" },
               { k: "britgpt", label: "BritGPT" },
             ] as { k: TabKey; label: string }[]).map((t) => (
               <button
@@ -59,11 +60,11 @@ function Index() {
         </div>
       </header>
 
-      {tab === "flywheel" ? (
+      {tab === "flywheel" || tab === "phase2" ? (
         <>
           <section className="max-w-7xl mx-auto px-4 py-10 overflow-x-auto">
             <div className="min-w-[1200px] relative" style={{ height: 1700 }}>
-              <FlywheelGalaxy onSelectStage={open} />
+              <FlywheelGalaxy onSelectStage={open} showExternal={tab === "phase2"} />
             </div>
           </section>
 
@@ -95,6 +96,7 @@ function Index() {
           <BritGPTPanel />
         </section>
       )}
+
 
       <StageDialogs
         wheel={selected?.wheel ?? null}
