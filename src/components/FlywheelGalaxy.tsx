@@ -116,13 +116,13 @@ export function FlywheelGalaxy({ onSelectStage, showExternal }: Props) {
               <path d="M 0 0 L 10 5 L 0 10 z" fill="oklch(0.55 0.14 220)" />
             </marker>
             <motion.path
-              d={`M 380 1100 C 480 1100, 520 ${bg4.y}, ${bg4.x - 90} ${bg4.y + 10}`}
+              d={`M 360 1540 C 480 1540, 520 ${bg4.y + 60}, ${bg4.x - 90} ${bg4.y + 10}`}
               stroke="oklch(0.55 0.14 220)" strokeWidth="2.5" fill="none"
               strokeDasharray="8 6" markerEnd="url(#arr-ext)"
               animate={{ strokeDashoffset: [0, -28] }}
               transition={{ duration: 2, ease: "linear", repeat: Infinity, delay: 0.6 }}
             />
-            <text x={230} y={1075} fill="oklch(0.45 0.14 220)" fontSize="12" fontWeight="700">
+            <text x={70} y={1340} fill="oklch(0.45 0.14 220)" fontSize="12" fontWeight="700">
               Geo · Weather · Sales → Activate
             </text>
           </>
@@ -163,9 +163,9 @@ export function FlywheelGalaxy({ onSelectStage, showExternal }: Props) {
         <Flywheel wheel={creative} size={CR_SIZE} onSelectStage={onSelectStage} spinDuration={50} />
       </div>
 
-      {/* External Intelligence — Phase 2 (left side) */}
+      {/* External Intelligence — Phase 2 (left side, aligned with Creative row) */}
       {showExternal && (
-        <div className="absolute" style={{ left: 20, top: 920 }}>
+        <div className="absolute" style={{ left: 20, top: 1360 }}>
           <div className="text-center mb-2">
             <div className="text-[11px] uppercase tracking-[0.25em] font-bold" style={{ color: "oklch(0.45 0.14 220)" }}>
               Phase 2 · External Intelligence
@@ -174,6 +174,7 @@ export function FlywheelGalaxy({ onSelectStage, showExternal }: Props) {
           <Flywheel wheel={external} size={340} onSelectStage={onSelectStage} spinDuration={48} />
         </div>
       )}
+
     </div>
 
   );
