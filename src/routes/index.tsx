@@ -60,11 +60,11 @@ function Index() {
         </div>
       </header>
 
-      {tab === "flywheel" ? (
+      {tab === "flywheel" || tab === "phase2" ? (
         <>
           <section className="max-w-7xl mx-auto px-4 py-10 overflow-x-auto">
             <div className="min-w-[1200px] relative" style={{ height: 1700 }}>
-              <FlywheelGalaxy onSelectStage={open} />
+              <FlywheelGalaxy onSelectStage={open} showExternal={tab === "phase2"} />
             </div>
           </section>
 
@@ -96,6 +96,7 @@ function Index() {
           <BritGPTPanel />
         </section>
       )}
+
 
       <StageDialogs
         wheel={selected?.wheel ?? null}
