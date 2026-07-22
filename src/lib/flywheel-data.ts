@@ -208,6 +208,33 @@ export const aeo: Wheel = {
   ],
 };
 
+export const external: Wheel = {
+  id: "aeo", // reuse type slot; styled separately
+  name: "External Intelligence",
+  tagline: "Geo · Weather · Commerce signals into Activate",
+  color: "oklch(0.55 0.14 220)",
+  stages: [
+    { id: "ex1", num: 1, title: "Weather APIs", subtitle: "Live climate & seasonality",
+      inputs: [{ group: "Sources", items: ["Google Weather", "IMD feeds", "Heatwave / monsoon alerts", "Humidity & temperature"] }],
+      output: "Weather-driven demand triggers for SKUs & regions." },
+    { id: "ex2", num: 2, title: "Google Earth", subtitle: "Terrain & catchment view",
+      inputs: [{ group: "Sources", items: ["Satellite imagery", "Catchment mapping", "Urban density layers"] }],
+      output: "Geo-catchment intelligence for micro-market activation." },
+    { id: "ex3", num: 3, title: "Google Places", subtitle: "POI & demography mapping",
+      inputs: [{ group: "Sources", items: ["POI density", "Footfall proxies", "Demography overlays", "Competing store maps"] }],
+      output: "POI + demography maps per pincode / catchment." },
+    { id: "ex4", num: 4, title: "Census Data", subtitle: "Population & household mix",
+      inputs: [{ group: "Sources", items: ["Household size", "Income bands", "Age / language mix", "Urban vs rural"] }],
+      output: "Demographic base layer for targeting & assortment." },
+    { id: "ex5", num: 5, title: "Pincode Eco Affinity", subtitle: "Economic & category affinity",
+      inputs: [{ group: "Sources", items: ["Pincode income indices", "Category spend affinity", "Premium vs value skew"] }],
+      output: "Pincode-level affinity scores for Britannia categories." },
+    { id: "ex6", num: 6, title: "GT / MT / Ecom Sales", subtitle: "Channel demand signals",
+      inputs: [{ group: "Sources", items: ["General Trade offtake", "Modern Trade scan data", "Ecommerce & QC velocity", "Stock-out signals"] }],
+      output: "Live channel demand & fulfilment signals feeding Activate." },
+  ],
+};
+
 export const wheels: Wheel[] = [britgpt, creative, aeo];
 
 export const interlinks = [
@@ -216,3 +243,4 @@ export const interlinks = [
   { from: "aeo", to: "britgpt", label: "Discovery signals" },
   { from: "britgpt", to: "aeo", label: "Trend signals & cohorts" },
 ];
+
