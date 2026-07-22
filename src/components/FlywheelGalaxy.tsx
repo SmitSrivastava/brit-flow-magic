@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Flywheel } from "@/components/Flywheel";
-import { britgpt, creative, aeo, type Wheel } from "@/lib/flywheel-data";
+import { britgpt, creative, aeo, external, type Wheel } from "@/lib/flywheel-data";
 
-type Props = { onSelectStage: (wheel: Wheel, stageId: string) => void };
+type Props = { onSelectStage: (wheel: Wheel, stageId: string) => void; showExternal?: boolean };
+
 
 // Layout coordinates (must match the absolute-positioned wheels below)
 const VW = 1200;
